@@ -9,6 +9,7 @@ namespace RentalApp.ViewModels;
 public partial class ItemsListViewModel : ObservableObject
 {
     private readonly IApiService _apiService;
+    private readonly INavigationService _navigationService;
 
     [ObservableProperty]
     private ObservableCollection<Item> _items = [];
@@ -19,9 +20,10 @@ public partial class ItemsListViewModel : ObservableObject
     [ObservableProperty]
     private string _errorMessage = string.Empty;
 
-    public ItemsListViewModel(IApiService apiService)
+    public ItemsListViewModel(IApiService apiService, INavigationService navigationService)
     {
         _apiService = apiService;
+        _navigationService = navigationService;
     }
 
     [RelayCommand]
@@ -42,5 +44,11 @@ public partial class ItemsListViewModel : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    public async Task NavigateToCreateAsync()
+    {
+        await _navigationService.NavigateToAsync("CreateItemPage");
     }
 }

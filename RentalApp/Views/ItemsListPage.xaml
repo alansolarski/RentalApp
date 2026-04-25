@@ -6,7 +6,7 @@
              x:Class="RentalApp.Views.ItemsListPage"
              Title="Browse Items">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
         <ActivityIndicator Grid.Row="0"
                            IsRunning="{Binding IsLoading}"
                            IsVisible="{Binding IsLoading}"/>
@@ -16,6 +16,12 @@
                IsVisible="{Binding ErrorMessage}"
                TextColor="Red"
                Margin="10"/>
+
+        <Button Grid.Row="0"
+                Text="+ List an Item"
+                Command="{Binding NavigateToCreateCommand}"
+                Margin="10,5"
+                HorizontalOptions="End"/>
 
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Items}">

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentalApp.Views.CreateItemPage"
+             Title="List an Item">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20"
+                Spacing="15">
+
+            <Label Text="Title"
+                    FontAttributes="Bold"/>
+            <Entry Placeholder="e.g. Electric Drill"
+                   Text="{Binding Title}"/>
+
+            <Label Text="Description"
+                    FontAttributes="Bold"/>
+            <Editor Placeholder="Describe your item..."
+                    Text="{Binding Description}"
+                    HeightRequest="100"/>
+
+            <Label Text="Daily Rate (£)"
+                    FontAttributes="Bold"/>
+            <Entry Placeholder="e.g. 5.00"
+                   Text="{Binding DailyRate}"
+                   Keyboard="Numeric"/>
+
+            <Label Text="Category"
+                    FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding Categories}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedCategory}"/>
+
+            <Label Text="Location"
+                    FontAttributes="Bold"/>
+            <Grid ColumnDefinitions="*,Auto">
+                <Entry Grid.Column="0"
+                       Placeholder="Latitude"
+                       Text="{Binding Latitude}"
+                       Keyboard="Numeric"/>
+                <Entry Grid.Column="1"
+                       Placeholder="Longitude"
+                       Text="{Binding Longitude}"
+                       Keyboard="Numeric"/>
+            </Grid>
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding HasError}"/>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"/>
+
+            <Button Text="List Item"
+                    Command="{Binding CreateItemCommand}"
+                    IsEnabled="{Binding IsNotLoading}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
