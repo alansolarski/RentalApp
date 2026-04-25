@@ -51,4 +51,10 @@ public partial class ItemsListViewModel : ObservableObject
     {
         await _navigationService.NavigateToAsync("CreateItemPage");
     }
+
+    [RelayCommand]
+    public async Task NavigateToDetailAsync(int id)
+    {
+        await _navigationService.NavigateToAsync($"ItemDetailPage?id={id}");
+    }
 }
