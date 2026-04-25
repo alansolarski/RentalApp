@@ -6,6 +6,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Services;
+using RentalApp.Views;
 
 namespace RentalApp.ViewModels;
 
@@ -84,7 +85,7 @@ public partial class LoginViewModel : BaseViewModel
 
             if (result.IsSuccess)
             {
-                await _navigationService.NavigateToAsync("MainPage");
+                await _navigationService.NavigateToAsync("ItemsListPage");
             }
             else
             {

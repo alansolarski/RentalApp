@@ -41,6 +41,9 @@ public static class MauiProgram
         builder.Services.AddTransient<UserDetailViewModel>();
         builder.Services.AddSingleton<TempViewModel>();
         builder.Services.AddTransient<TempPage>();
+        builder.Services.AddSingleton<IApiService, ApiService>();
+        builder.Services.AddTransient<ItemsListViewModel>();
+        builder.Services.AddTransient<ItemsListPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

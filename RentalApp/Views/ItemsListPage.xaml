@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RentalApp.ViewModels"
+             xmlns:database="clr-namespace:RentalApp.Database.Models;assembly=RentalApp.Database"
+             x:Class="RentalApp.Views.ItemsListPage"
+             Title="Browse Items">
+
+    <Grid RowDefinitions="Auto,*">
+        <ActivityIndicator Grid.Row="0"
+                           IsRunning="{Binding IsLoading}"
+                           IsVisible="{Binding IsLoading}"/>
+
+        <Label Grid.Row="0"
+               Text="{Binding ErrorMessage}"
+               IsVisible="{Binding ErrorMessage}"
+               TextColor="Red"
+               Margin="10"/>
+
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Items}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="database:Item">
+                    <Frame Margin="10,5"
+                           Padding="10">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding Description}"
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+                            <Label Text="{Binding DailyRate, StringFormat='£{0:F2}/day'}"
+                                   FontSize="14"
+                                   TextColor="Green"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
