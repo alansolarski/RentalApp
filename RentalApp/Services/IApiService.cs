@@ -8,4 +8,5 @@ public interface IApiService
     Task<Item?> GetItemByIdAsync(int id);
     Task<Item?> CreateItemAsync(Item item);
     Task<IEnumerable<Category>> GetCategoriesAsync();
+    Task<bool> UpdateItemAsync(int id, UpdateItemRequest request);
 }

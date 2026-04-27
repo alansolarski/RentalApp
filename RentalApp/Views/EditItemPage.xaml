@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentalApp.Views.EditItemPage"
+             Title="Edit Item">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20"
+                Spacing="15">
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"/>
+
+            <Label Text="Title"
+                    FontAttributes="Bold"/>
+            <Entry Text="{Binding Title}"
+                    Placeholder="Item title"/>
+
+            <Label Text="Description"
+                    FontAttributes="Bold"/>
+            <Editor Text="{Binding Description}"
+                    Placeholder="Describe your item..."
+                    HeightRequest="100"/>
+
+            <Label Text="Daily Rate (£)"
+                    FontAttributes="Bold"/>
+            <Entry Text="{Binding DailyRate}"
+                   Placeholder="e.g. 5.00"
+                   Keyboard="Numeric"/>
+
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Available for rent"
+                        VerticalOptions="Center"/>
+                <Switch IsToggled="{Binding IsAvailable}"/>
+            </HorizontalStackLayout>
+
+            <Button Text="Save Changes"
+                    Command="{Binding SaveChangesCommand}"
+                    Margin="0,10,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

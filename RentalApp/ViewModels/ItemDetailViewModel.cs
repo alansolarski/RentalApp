@@ -38,4 +38,10 @@ public partial class ItemDetailViewModel : ObservableObject
             IsLoading = false;
         }
     }
+
+    [RelayCommand]
+    private async Task NavigateToEditAsync()
+    {
+        await Shell.Current.GoToAsync($"EditItemPage?id={Item?.Id}");
+    }
 }

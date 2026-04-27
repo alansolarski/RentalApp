@@ -23,7 +23,7 @@
                 Margin="10,5"
                 HorizontalOptions="End"/>
 
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="3"
                         ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="database:Item">

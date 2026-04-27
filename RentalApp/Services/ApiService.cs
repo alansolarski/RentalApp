@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using RentalApp.Database.Models;
+using System.Text;
+using System.Text.Json;
 
 namespace RentalApp.Services;
 
@@ -50,6 +52,14 @@ public class ApiService : IApiService
     {
         var response = await _httpClient.GetFromJsonAsync<CategoriesResponse>("categories");
         return response?.Categories ?? [];
+    }
+
+    public async Task<bool> UpdateItemAsync(int id, UpdateItemRequest request)
+    {
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PutAsync($"items/{id}", content);
+        return response.IsSuccessStatusCode;
     }
 }
 
