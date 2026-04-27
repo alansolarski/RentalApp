@@ -25,6 +25,8 @@
                     Command="{Binding NavigateToNearbyCommand}"/>
             <Button Text="+ List an Item"
                     Command="{Binding NavigateToCreateCommand}"/>
+            <Button Text="My Rentals"
+                    Command="{Binding NavigateToRentalsCommand}"/>
         </HorizontalStackLayout>
 
         <CollectionView Grid.Row="3"

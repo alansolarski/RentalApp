@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RentalApp.Views.RentalsPage"
+             Title="My Rentals">
+
+        <Grid RowDefinitions="Auto,Auto,*">
+
+                <ActivityIndicator Grid.Row="0"
+                                   IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
+                                   HorizontalOptions="Center"/>
+
+                <HorizontalStackLayout Grid.Row="1"
+                                       HorizontalOptions="Center"
+                                       Spacing="8"
+                                       Margin="0,8">
+                        <Button Text="Incoming"
+                                Command="{Binding ShowIncomingCommand}"
+                                BackgroundColor="{Binding IncomingButtonColor}"/>
+                        <Button Text="Outgoing"
+                                Command="{Binding ShowOutgoingCommand}"
+                                BackgroundColor="{Binding OutgoingButtonColor}"/>
+                </HorizontalStackLayout>
+
+                <CollectionView Grid.Row="2"
+                                ItemsSource="{Binding ActiveRentals}">
+                        <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                        <Frame Margin="12,6"
+                                                        Padding="14">
+                                                <VerticalStackLayout Spacing="6">
+                                                        <Label Text="{Binding Rental.ItemTitle}"
+                                                               FontSize="16"
+                                                                        FontAttributes="Bold"/>
+                                                        <Label Text="{Binding Rental.BorrowerName, StringFormat='From: {0}'}"
+                                                               FontSize="13"
+                                                                        TextColor="Gray"
+                                                               IsVisible="{Binding IsIncoming}"/>
+                                                        <Label Text="{Binding Rental.OwnerName, StringFormat='Owner: {0}'}"
+                                                               FontSize="13"
+                                                                        TextColor="Gray"
+                                                               IsVisible="{Binding IsOutgoing}"/>
+                                                        <Label Text="{Binding Rental.StartDate, StringFormat='From: {0:dd MMM yyyy}'}"
+                                                               FontSize="13"/>
+                                                        <Label Text="{Binding Rental.EndDate, StringFormat='To: {0:dd MMM yyyy}'}"
+                                                               FontSize="13"/>
+                                                        <Label Text="{Binding Rental.Status}"
+                                                               FontSize="13"
+                                                                        FontAttributes="Bold"/>
+                                                        <Label Text="{Binding Rental.TotalPrice, StringFormat='Total: £{0:F2}'}"
+                                                               FontSize="13"
+                                                                        TextColor="Green"/>
+
+                                                        <HorizontalStackLayout Spacing="8"
+                                                                               IsVisible="{Binding ShowApproveReject}">
+                                                                <Button Text="Approve"
+                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRentalCommand}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        BackgroundColor="Green"/>
+                                                                <Button Text="Reject"
+                                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRentalCommand}"
+                                                                        CommandParameter="{Binding .}"
+                                                                        BackgroundColor="Red"/>
+                                                        </HorizontalStackLayout>
+
+                                                        <Button Text="Mark as Returned"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkReturnedCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                IsVisible="{Binding ShowMarkReturned}"/>
+                                                </VerticalStackLayout>
+                                        </Frame>
+                                </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                </CollectionView>
+
+        </Grid>
+</ContentPage>

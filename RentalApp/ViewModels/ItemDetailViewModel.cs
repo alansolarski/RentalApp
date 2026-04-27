@@ -44,4 +44,27 @@ public partial class ItemDetailViewModel : ObservableObject
     {
         await Shell.Current.GoToAsync($"EditItemPage?id={Item?.Id}");
     }
+
+    [ObservableProperty]
+    private DateTime _startDate = DateTime.Today.AddDays(1);
+
+    [ObservableProperty]
+    private DateTime _endDate = DateTime.Today.AddDays(2);
+
+    [RelayCommand]
+    private async Task RequestRentalAsync()
+    {
+        var rentalService = IPlatformApplication.Current?.Services
+            .GetService<IRentalService>();
+
+        if (rentalService == null) return;
+
+        var (success, error) = await rentalService.RequestRentalAsync(
+            Item!.Id, StartDate, EndDate);
+
+        if (success)
+            await Shell.Current.DisplayAlert("Success", "Rental requested!", "OK");
+        else
+            await Shell.Current.DisplayAlert("Error", error, "OK");
+    }
 }

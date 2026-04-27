@@ -6,23 +6,24 @@ namespace RentalApp.Services;
 public class ApiAuthenticationService : IAuthenticationService
 {
     private readonly HttpClient _httpClient;
-    private string? _token;
+    private readonly TokenStore _tokenStore;
     private User? _currentUser;
 
     public event EventHandler<bool>? AuthenticationStateChanged;
-    public bool IsAuthenticated => _token != null;
+    public bool IsAuthenticated => _tokenStore.Token != null;
     public User? CurrentUser => _currentUser;
     public List<string> CurrentUserRoles => [];
 
-    public ApiAuthenticationService()
+    public ApiAuthenticationService(TokenStore tokenStore)
     {
+        _tokenStore = tokenStore;
         _httpClient = new HttpClient
         {
             BaseAddress = new Uri("https://set09102-api.b-davison.workers.dev/")
         };
     }
 
-    public string? GetToken() => _token;
+    public string? GetToken() => _tokenStore.Token;
 
     public async Task<AuthenticationResult> LoginAsync(string email, string password)
     {
@@ -37,7 +38,7 @@ public class ApiAuthenticationService : IAuthenticationService
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
-                _token = result?.Token;
+                _tokenStore.SetToken(result?.Token, result?.UserId ?? 0);
                 _currentUser = new User { Email = email };
                 AuthenticationStateChanged?.Invoke(this, true);
                 return new AuthenticationResult(true, "Login successful");
@@ -76,7 +77,7 @@ public class ApiAuthenticationService : IAuthenticationService
 
     public Task LogoutAsync()
     {
-        _token = null;
+        _tokenStore.SetToken(null);
         _currentUser = null;
         AuthenticationStateChanged?.Invoke(this, false);
         return Task.CompletedTask;
