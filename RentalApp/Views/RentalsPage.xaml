@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RentalApp.ViewModels"
              x:Class="RentalApp.Views.RentalsPage"
-             Title="My Rentals">
+             x:DataType="vm:RentalsViewModel"
+             Title="Rentals">
 
         <Grid RowDefinitions="Auto,Auto,*">
 
@@ -26,20 +28,20 @@
                 <CollectionView Grid.Row="2"
                                 ItemsSource="{Binding ActiveRentals}">
                         <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="vm:RentalDisplayItem">
                                         <Frame Margin="12,6"
-                                                        Padding="14">
+                                               Padding="14">
                                                 <VerticalStackLayout Spacing="6">
                                                         <Label Text="{Binding Rental.ItemTitle}"
                                                                FontSize="16"
-                                                                        FontAttributes="Bold"/>
+                                                               FontAttributes="Bold"/>
                                                         <Label Text="{Binding Rental.BorrowerName, StringFormat='From: {0}'}"
                                                                FontSize="13"
-                                                                        TextColor="Gray"
+                                                               TextColor="Gray"
                                                                IsVisible="{Binding IsIncoming}"/>
                                                         <Label Text="{Binding Rental.OwnerName, StringFormat='Owner: {0}'}"
                                                                FontSize="13"
-                                                                        TextColor="Gray"
+                                                               TextColor="Gray"
                                                                IsVisible="{Binding IsOutgoing}"/>
                                                         <Label Text="{Binding Rental.StartDate, StringFormat='From: {0:dd MMM yyyy}'}"
                                                                FontSize="13"/>
@@ -47,10 +49,10 @@
                                                                FontSize="13"/>
                                                         <Label Text="{Binding Rental.Status}"
                                                                FontSize="13"
-                                                                        FontAttributes="Bold"/>
+                                                               FontAttributes="Bold"/>
                                                         <Label Text="{Binding Rental.TotalPrice, StringFormat='Total: £{0:F2}'}"
                                                                FontSize="13"
-                                                                        TextColor="Green"/>
+                                                               TextColor="Green"/>
 
                                                         <HorizontalStackLayout Spacing="8"
                                                                                IsVisible="{Binding ShowApproveReject}">
@@ -68,6 +70,13 @@
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.MarkReturnedCommand}"
                                                                 CommandParameter="{Binding .}"
                                                                 IsVisible="{Binding ShowMarkReturned}"/>
+
+                                                        <Button Text="Leave Review"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LeaveReviewCommand}"
+                                                                CommandParameter="{Binding .}"
+                                                                IsVisible="{Binding ShowLeaveReview}"
+                                                                BackgroundColor="#4CAF50"
+                                                                TextColor="White"/>
                                                 </VerticalStackLayout>
                                         </Frame>
                                 </DataTemplate>

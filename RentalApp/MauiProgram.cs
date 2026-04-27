@@ -57,6 +57,9 @@ public static class MauiProgram
         builder.Services.AddTransient<RentalsViewModel>();
         builder.Services.AddTransient<RentalsPage>();
         builder.Services.AddSingleton<TokenStore>();
+        builder.Services.AddTransient<IReviewService, ReviewService>();
+        builder.Services.AddSingleton<ReviewsViewModel>();
+        builder.Services.AddTransient<ReviewsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

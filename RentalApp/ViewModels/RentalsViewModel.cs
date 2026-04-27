@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Models;
 using RentalApp.Services;
+using RentalApp.Views;
 using System.Collections.ObjectModel;
 
 namespace RentalApp.ViewModels;
@@ -119,6 +120,13 @@ public partial class RentalsViewModel : ObservableObject
         else
             await Shell.Current.DisplayAlert("Error", error, "OK");
     }
+
+    [RelayCommand]
+    private async Task LeaveReviewAsync(RentalDisplayItem item)
+    {
+        await Shell.Current.GoToAsync(
+            $"{nameof(ReviewsPage)}?itemId={item.Rental.ItemId}&rentalId={item.Rental.Id}&canReview=true");
+    }
 }
 
 public class RentalDisplayItem
@@ -128,6 +136,8 @@ public class RentalDisplayItem
     public bool IsOutgoing => !IsIncoming;
     public bool ShowApproveReject => Rental.Status == "Requested" && IsIncoming;
     public bool ShowMarkReturned => Rental.Status == "Out for Rent" && IsOutgoing;
+    public bool ShowLeaveReview =>
+    IsOutgoing && Rental.Status == "Completed";
 
     public RentalDisplayItem(Rental rental, bool isIncoming)
     {

@@ -74,6 +74,11 @@
                      <Button Text="Edit Item"
                              Command="{Binding NavigateToEditCommand}"/>
 
+                     <Button Text="View Reviews"
+                             Command="{Binding NavigateToReviewsCommand}"
+                             BackgroundColor="#512BD4"
+                             TextColor="White"/>
+
               </VerticalStackLayout>
        </ScrollView>
 </ContentPage>

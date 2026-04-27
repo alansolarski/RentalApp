@@ -2,7 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Models;
 using RentalApp.Services;
-
+using RentalApp.Views;
 namespace RentalApp.ViewModels;
 
 public partial class ItemDetailViewModel : ObservableObject
@@ -66,5 +66,12 @@ public partial class ItemDetailViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Success", "Rental requested!", "OK");
         else
             await Shell.Current.DisplayAlert("Error", error, "OK");
+    }
+
+    [RelayCommand]
+    private async Task NavigateToReviewsAsync()
+    {
+        await Shell.Current.GoToAsync(
+            $"{nameof(ReviewsPage)}?itemId={Item.Id}");
     }
 }

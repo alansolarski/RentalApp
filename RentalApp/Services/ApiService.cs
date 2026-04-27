@@ -76,7 +76,7 @@ public class ApiService : IApiService
             $"items/nearby?lat={lat}&lon={lon}&radius={radiusKm}");
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<NearbyItemsResponse>(json);
+        var result = JsonSerializer.Deserialize<NearbyItemsResponse>(json, _jsonOptions);
         return result?.Items ?? new List<NearbyItem>();
     }
 
@@ -111,7 +111,7 @@ public class ApiService : IApiService
         var response = await _httpClient.GetAsync("rentals/incoming");
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<RentalsResponse>(json);
+        var result = JsonSerializer.Deserialize<RentalsResponse>(json, _jsonOptions);
         return result?.Rentals ?? new List<Rental>();
     }
 
@@ -121,7 +121,7 @@ public class ApiService : IApiService
         var response = await _httpClient.GetAsync("rentals/outgoing");
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<RentalsResponse>(json);
+        var result = JsonSerializer.Deserialize<RentalsResponse>(json, _jsonOptions);
         return result?.Rentals ?? new List<Rental>();
     }
 
@@ -137,6 +137,39 @@ public class ApiService : IApiService
 
         return (false, $"Failed to update status: {response.StatusCode}");
     }
+
+    public async Task<IEnumerable<Review>> GetItemReviewsAsync(int itemId)
+    {
+        AttachToken();
+        var response = await _httpClient.GetAsync($"items/{itemId}/reviews");
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<ItemReviewsResponse>(json, _jsonOptions);
+        return result?.Reviews ?? Enumerable.Empty<Review>();
+    }
+
+    public async Task<Review> SubmitReviewAsync(int rentalId, int rating, string? comment)
+    {
+        AttachToken();
+        var body = new { rentalId, rating, comment };
+        var response = await _httpClient.PostAsJsonAsync("reviews", body);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Review>()
+            ?? throw new Exception("Failed to parse review response");
+    }
+
+    // Add this private response class at the bottom of ApiService.cs
+    private class ItemReviewsResponse
+    {
+        public List<Review> Reviews { get; set; } = new();
+        public decimal? AverageRating { get; set; }
+        public int TotalReviews { get; set; }
+    }
+
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 }
 
 internal class ItemsResponse
