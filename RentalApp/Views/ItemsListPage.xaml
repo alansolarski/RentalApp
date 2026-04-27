@@ -17,11 +17,15 @@
                TextColor="Red"
                Margin="10"/>
 
-        <Button Grid.Row="0"
-                Text="+ List an Item"
-                Command="{Binding NavigateToCreateCommand}"
-                Margin="10,5"
-                HorizontalOptions="End"/>
+        <HorizontalStackLayout Grid.Row="0"
+                               HorizontalOptions="End"
+                               Spacing="8"
+                               Margin="10,5">
+            <Button Text="Near Me"
+                    Command="{Binding NavigateToNearbyCommand}"/>
+            <Button Text="+ List an Item"
+                    Command="{Binding NavigateToCreateCommand}"/>
+        </HorizontalStackLayout>
 
         <CollectionView Grid.Row="3"
                         ItemsSource="{Binding Items}">

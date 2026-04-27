@@ -57,4 +57,10 @@ public partial class ItemsListViewModel : ObservableObject
     {
         await _navigationService.NavigateToAsync($"ItemDetailPage?id={id}");
     }
+
+    [RelayCommand]
+    private async Task NavigateToNearbyAsync()
+    {
+        await Shell.Current.GoToAsync("NearbyItemsPage");
+    }
 }

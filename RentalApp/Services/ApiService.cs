@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using RentalApp.Database.Models;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RentalApp.Services;
 
@@ -60,6 +61,22 @@ public class ApiService : IApiService
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync($"items/{id}", content);
         return response.IsSuccessStatusCode;
+    }
+
+    private class NearbyItemsResponse
+    {
+        [JsonPropertyName("items")]
+        public List<NearbyItem> Items { get; set; } = new();
+    }
+
+    public async Task<List<NearbyItem>> GetNearbyItemsAsync(double lat, double lon, double radiusKm = 5)
+    {
+        var response = await _httpClient.GetAsync(
+            $"items/nearby?lat={lat}&lon={lon}&radius={radiusKm}");
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<NearbyItemsResponse>(json);
+        return result?.Items ?? new List<NearbyItem>();
     }
 }
 

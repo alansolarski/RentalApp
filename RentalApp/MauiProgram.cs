@@ -50,6 +50,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ItemDetailPage>();
         builder.Services.AddTransient<EditItemViewModel>();
         builder.Services.AddTransient<EditItemPage>();
+        builder.Services.AddSingleton<ILocationService, LocationService>();
+        builder.Services.AddTransient<NearbyItemsViewModel>();
+        builder.Services.AddTransient<NearbyItemsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
