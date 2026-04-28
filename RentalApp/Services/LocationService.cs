@@ -1,4 +1,5 @@
 namespace RentalApp.Services;
+using RentalApp.Database.Services;
 
 public class LocationService : ILocationService
 {
