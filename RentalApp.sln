@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalApp.Database", "Renta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalApp.Migrations", "RentalApp.Migrations\RentalApp.Migrations.csproj", "{56596C37-4445-4915-8BA5-F9DADDE70F15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalApp.Test", "RentalApp.Test\RentalApp.Test.csproj", "{EA21321E-0E4F-4385-8B84-8973D5E76330}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{56596C37-4445-4915-8BA5-F9DADDE70F15}.Release|x64.Build.0 = Release|Any CPU
 		{56596C37-4445-4915-8BA5-F9DADDE70F15}.Release|x86.ActiveCfg = Release|Any CPU
 		{56596C37-4445-4915-8BA5-F9DADDE70F15}.Release|x86.Build.0 = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|x64.Build.0 = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA21321E-0E4F-4385-8B84-8973D5E76330}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
