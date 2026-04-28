@@ -3,9 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Models;
 using RentalApp.Database.Services;
-using RentalApp.Services;
 
-namespace RentalApp.ViewModels;
+namespace RentalApp.Database.ViewModels;
 
 public partial class ItemsListViewModel : ObservableObject
 {
