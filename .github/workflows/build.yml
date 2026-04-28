@@ -13,21 +13,35 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for SonarCloud analysis
 
       - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
       - name: Create CI appsettings.json
         run: |
-          cat > RentalApp.Database/appsettings.json << 'EOF'
+          cat > RentalApp.Database/appsettings.json << 'EOF2'
           {
             "ConnectionStrings": {
               "DevelopmentConnection": "Host=localhost;Port=5432;Username=app_user;Password=app_password;Database=appdb"
             }
           }
-          EOF
+          EOF2
+
+      - name: Begin SonarCloud analysis
+        run: |
+          dotnet-sonarscanner begin \
+            /k:"alansolarski_RentalApp" \
+            /o:"alansolarski" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
       - name: Restore dependencies
         run: dotnet restore RentalApp.Database/RentalApp.Database.csproj
@@ -41,5 +55,8 @@ jobs:
       - name: Build test project
         run: dotnet build RentalApp.Test/RentalApp.Test.csproj --no-restore -c Debug
 
-      - name: Run tests
-        run: dotnet test RentalApp.Test/RentalApp.Test.csproj --no-build -c Debug --verbosity normal
+      - name: Run tests with coverage
+        run: dotnet test RentalApp.Test/RentalApp.Test.csproj --no-build -c Debug --verbosity normal --collect:"XPlat Code Coverage" --settings RentalApp.Test/coverlet.runsettings -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      - name: End SonarCloud analysis
+        run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
