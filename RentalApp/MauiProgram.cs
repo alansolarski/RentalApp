@@ -3,6 +3,7 @@ using RentalApp.ViewModels;
 using RentalApp.Database.Data;
 using RentalApp.Views;
 using System.Diagnostics;
+using RentalApp.Database.Services;
 using RentalApp.Services;
 
 namespace RentalApp;

@@ -1,6 +1,6 @@
 using RentalApp.Database.Models;
 
-namespace RentalApp.Services;
+namespace RentalApp.Database.Services;
 
 public interface IRentalService
 {

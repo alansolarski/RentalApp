@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Models;
+using RentalApp.Database.Services;
 using RentalApp.Services;
 using RentalApp.Views;
 using System.Collections.ObjectModel;

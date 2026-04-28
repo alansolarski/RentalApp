@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using RentalApp.Database.Data;
 using RentalApp.Database.Models;
+using RentalApp.Database.Services;
 using RentalApp.Services;
 using CommunityToolkit.Mvvm.Input;
 
