@@ -158,6 +158,15 @@ public class ApiService : IApiService
             ?? throw new Exception("Failed to parse review response");
     }
 
+    public async Task<UserProfile?> GetCurrentUserProfileAsync()
+    {
+        AttachToken();
+        var response = await _httpClient.GetAsync("users/me");
+        if (!response.IsSuccessStatusCode) return null;
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<UserProfile>(json, _jsonOptions);
+    }
+
     // Add this private response class at the bottom of ApiService.cs
     private class ItemReviewsResponse
     {

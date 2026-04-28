@@ -69,4 +69,10 @@ public partial class ItemsListViewModel : ObservableObject
     {
         await _navigationService.NavigateToAsync("RentalsPage");
     }
+
+    [RelayCommand]
+    private async Task NavigateToProfileAsync()
+    {
+        await _navigationService.NavigateToAsync("ProfilePage");
+    }
 }

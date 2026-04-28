@@ -24,6 +24,7 @@ public partial class App : Application
 		Routing.RegisterRoute("NearbyItemsPage", typeof(NearbyItemsPage));
 		Routing.RegisterRoute("RentalsPage", typeof(RentalsPage));
 		Routing.RegisterRoute(nameof(ReviewsPage), typeof(ReviewsPage));
+		Routing.RegisterRoute("ProfilePage", typeof(ProfilePage));
 	}
 
 	protected override Window CreateWindow(IActivationState? activationState)

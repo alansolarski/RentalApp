@@ -27,6 +27,8 @@
                     Command="{Binding NavigateToCreateCommand}"/>
             <Button Text="My Rentals"
                     Command="{Binding NavigateToRentalsCommand}"/>
+            <Button Text="Profile"
+                    Command="{Binding NavigateToProfileCommand}"/>
         </HorizontalStackLayout>
 
         <CollectionView Grid.Row="3"

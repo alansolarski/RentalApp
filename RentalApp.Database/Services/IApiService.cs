@@ -16,4 +16,5 @@ public interface IApiService
     Task<(bool Success, string Error)> UpdateRentalStatusAsync(int rentalId, string status);
     Task<IEnumerable<Review>> GetItemReviewsAsync(int itemId);
     Task<Review> SubmitReviewAsync(int rentalId, int rating, string? comment);
+    Task<UserProfile?> GetCurrentUserProfileAsync();
 }

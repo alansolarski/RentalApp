@@ -61,6 +61,8 @@ public static class MauiProgram
         builder.Services.AddTransient<IReviewService, ReviewService>();
         builder.Services.AddSingleton<ReviewsViewModel>();
         builder.Services.AddTransient<ReviewsPage>();
+        builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<ProfilePage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
