@@ -1,0 +1,35 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore RentalApp.Database/RentalApp.Database.csproj
+
+      - name: Build Database library
+        run: dotnet build RentalApp.Database/RentalApp.Database.csproj --no-restore -c Debug
+
+      - name: Restore test dependencies
+        run: dotnet restore RentalApp.Test/RentalApp.Test.csproj
+
+      - name: Build test project
+        run: dotnet build RentalApp.Test/RentalApp.Test.csproj --no-restore -c Debug
+
+      - name: Run tests
+        run: dotnet test RentalApp.Test/RentalApp.Test.csproj --no-build -c Debug --verbosity normal
