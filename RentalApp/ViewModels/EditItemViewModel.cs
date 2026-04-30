@@ -5,6 +5,10 @@ using RentalApp.Database.Services;
 
 namespace RentalApp.ViewModels;
 
+/// <summary>
+/// ViewModel for the Edit Item page. Receives the item ID via Shell query parameter,
+/// loads the current item values, and saves changes via PUT /items/{id}.
+/// </summary>
 [QueryProperty(nameof(ItemId), "id")]
 public partial class EditItemViewModel : ObservableObject
 {
@@ -33,12 +37,17 @@ public partial class EditItemViewModel : ObservableObject
         _apiService = apiService;
     }
 
+    /// <summary>
+    /// Fires when the ItemId query parameter is set by Shell navigation.
+    /// Triggers the item load so the form is populated before the user sees it.
+    /// </summary>
     partial void OnItemIdChanged(int value)
     {
         if (value > 0)
             LoadItemCommand.Execute(null);
     }
 
+    /// <summary>Fetches the current item values from GET /items/{id} and populates the form.</summary>
     [RelayCommand]
     private async Task LoadItemAsync()
     {
@@ -60,6 +69,11 @@ public partial class EditItemViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Validates and saves the edited item via PUT /items/{id}.
+    /// Shows a Shell DisplayAlert rather than an inline error because this page
+    /// doesn't have an error label in the XAML.
+    /// </summary>
     [RelayCommand]
     private async Task SaveChangesAsync()
     {

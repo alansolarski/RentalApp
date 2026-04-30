@@ -4,6 +4,12 @@ using RentalApp.Database.Services;
 
 namespace RentalApp.Test.Services;
 
+/// <summary>
+/// Tests for RentalService. The service wraps IApiService and adds two layers of
+/// client-side validation — date validation in RequestRentalAsync and status
+/// allowlist validation in UpdateRentalStatusAsync — so those are what we test here.
+/// HTTP-level behaviour is covered by the IApiService mock rather than live calls.
+/// </summary>
 public class RentalServiceTests
 {
     private readonly Mock<IApiService> _mockApiService;
@@ -38,6 +44,7 @@ public class RentalServiceTests
     public async Task RequestRentalAsync_EndDateSameAsStartDate_ReturnsFalseWithError()
     {
         // Arrange
+        // Same-day rental makes no sense — need at least one night.
         var startDate = DateTime.Today.AddDays(1);
         var endDate = startDate;
 
@@ -131,6 +138,9 @@ public class RentalServiceTests
     [InlineData("random")]
     public async Task UpdateRentalStatusAsync_InvalidStatus_ReturnsFalseWithoutCallingApi(string status)
     {
+        // These strings aren't in the API's accepted status list — the service should
+        // reject them before making an HTTP call to avoid a confusing 400 response.
+
         // Arrange & Act
         var (success, error) = await _sut.UpdateRentalStatusAsync(1, status);
 

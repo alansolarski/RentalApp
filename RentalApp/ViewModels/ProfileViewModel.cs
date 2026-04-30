@@ -1,8 +1,3 @@
-/// @file ProfileViewModel.cs
-/// @brief User profile management view model
-/// @author RentalApp Development Team
-/// @date 2025
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Models;
@@ -11,7 +6,10 @@ using RentalApp.Services;
 
 namespace RentalApp.ViewModels;
 
-/// @brief View model for the user profile page
+/// <summary>
+/// ViewModel for the Profile page. Loads the user's API profile (average rating,
+/// items listed, rentals completed) and handles the password change form.
+/// </summary>
 public partial class ProfileViewModel : BaseViewModel
 {
     private readonly IAuthenticationService _authService;
@@ -24,6 +22,7 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty]
     private UserProfile? userProfile;
 
+    // Password change form fields.
     [ObservableProperty]
     private string currentPassword = string.Empty;
 
@@ -33,6 +32,7 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty]
     private string confirmNewPassword = string.Empty;
 
+    /// <summary>True when the password change form is expanded.</summary>
     [ObservableProperty]
     private bool isChangingPassword;
 
@@ -48,9 +48,14 @@ public partial class ProfileViewModel : BaseViewModel
         _navigationService = navigationService;
         _apiService = apiService;
         Title = "Profile";
+        // Show whatever we already have from the auth service as a fallback while the API call runs.
         CurrentUser = _authService.CurrentUser;
     }
 
+    /// <summary>
+    /// Loads the enriched user profile from GET /users/me. Non-critical — if it fails
+    /// the page still shows the local user data from CurrentUser.
+    /// </summary>
     [RelayCommand]
     public async Task LoadProfileAsync()
     {
@@ -69,6 +74,11 @@ public partial class ProfileViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Validates and submits the password change request.
+    /// ApiAuthenticationService.ChangePasswordAsync always returns false because the API
+    /// doesn't support password changes. The error message reflects that clearly.
+    /// </summary>
     [RelayCommand]
     private async Task ChangePasswordAsync()
     {
@@ -90,6 +100,8 @@ public partial class ProfileViewModel : BaseViewModel
             }
             else
             {
+                // The API doesn't support password changes in this version — say so clearly
+                // rather than showing a generic error.
                 SetError("Password change is not supported by the API in this version.");
             }
         }
@@ -103,6 +115,7 @@ public partial class ProfileViewModel : BaseViewModel
         }
     }
 
+    /// <summary>Toggles the password change form. Clears the fields and any errors when collapsing.</summary>
     [RelayCommand]
     private void TogglePasswordChangeMode()
     {
@@ -120,6 +133,7 @@ public partial class ProfileViewModel : BaseViewModel
         await _navigationService.NavigateBackAsync();
     }
 
+    /// <summary>Validates all password change fields before hitting the API.</summary>
     private bool ValidatePasswordChange()
     {
         if (string.IsNullOrWhiteSpace(CurrentPassword))

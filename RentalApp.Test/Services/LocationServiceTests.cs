@@ -5,9 +5,10 @@ using RentalApp.Database.Services;
 namespace RentalApp.Test.Services;
 
 /// <summary>
-/// ILocationService is mocked for testing
-/// location dependent features. The real LocationService uses MAUI
-/// Geolocation API which requires a physical device so we mock it here.
+/// Tests for location-dependent behaviour using a mock ILocationService.
+/// The real LocationService calls MAUI's Geolocation API which requires a physical
+/// device with location permission, so we can't use it in xUnit — the interface
+/// exists in the Database project so we can mock it here.
 /// </summary>
 public class LocationServiceTests
 {
@@ -46,6 +47,7 @@ public class LocationServiceTests
     public async Task GetCurrentLocationAsync_ReturnsNull_WhenPermissionDenied()
     {
         // Arrange
+        // Null means the user denied the permission prompt or location is off.
         _mockLocationService
             .Setup(l => l.GetCurrentLocationAsync())
             .ReturnsAsync((ValueTuple<double, double>?)null);

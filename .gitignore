@@ -43,6 +43,7 @@ packages/
 # VS Code
 .vscode/
 *.code-workspace
+.claude
 
 # Test results
 TestResults/

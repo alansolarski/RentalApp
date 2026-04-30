@@ -1,58 +1,46 @@
-/// @file BaseViewModel.cs
-/// @brief Base view model class providing common functionality for all view models
-/// @author RentalApp Development Team
-/// @date 2025
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace RentalApp.ViewModels;
 
-/// @brief Base view model class that provides common properties and functionality
-/// @details Extends ObservableObject to provide property change notifications and includes
-/// common properties like IsBusy, Title, and error handling
-/// @extends ObservableObject
+/// <summary>
+/// Base ViewModel that provides shared observable properties used across most pages:
+/// IsBusy, Title, ErrorMessage, and HasError.
+/// </summary>
 public partial class BaseViewModel : ObservableObject
 {
-    /// @brief Indicates whether the view model is currently performing a busy operation
-    /// @details Observable property that can be bound to UI elements to show loading states
+    /// <summary>True while an async operation is running. Bound to activity indicators in XAML.</summary>
     [ObservableProperty]
     private bool isBusy;
 
-    /// @brief The title of the current page or view
-    /// @details Observable property that can be bound to page titles or headers
+    /// <summary>Page title shown in the Shell navigation bar.</summary>
     [ObservableProperty]
     private string title = string.Empty;
 
-    /// @brief The current error message, if any
-    /// @details Observable property that stores error messages for display to the user
+    /// <summary>Current error message to show the user. Empty when there's no error.</summary>
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    /// @brief Indicates whether there is currently an error
-    /// @details Observable property that indicates if an error state exists
+    /// <summary>True when ErrorMessage is non-empty — used to toggle error UI visibility.</summary>
     [ObservableProperty]
     private bool hasError;
 
-    /// @brief Sets an error message and updates the error state
-    /// @param message The error message to set
-    /// @details Updates both ErrorMessage and HasError properties
+    /// <summary>Sets the error message and flips HasError to true.</summary>
+    /// <param name="message">The error text to display.</param>
     protected void SetError(string message)
     {
         ErrorMessage = message;
         HasError = !string.IsNullOrEmpty(message);
     }
 
-    /// @brief Clears the current error state
-    /// @details Resets both ErrorMessage and HasError properties
+    /// <summary>Clears any current error state.</summary>
     protected void ClearError()
     {
         ErrorMessage = string.Empty;
         HasError = false;
     }
 
-    /// @brief Command to clear the current error state
-    /// @details Relay command that calls ClearError method
+    /// <summary>Relay command that clears the error state. Can be bound to a dismiss button.</summary>
     [RelayCommand]
     private void ClearErrorCommand()
     {

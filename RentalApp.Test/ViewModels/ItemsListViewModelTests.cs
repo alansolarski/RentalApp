@@ -5,6 +5,12 @@ using RentalApp.Database.ViewModels;
 
 namespace RentalApp.Test.ViewModels;
 
+/// <summary>
+/// Tests for ItemsListViewModel (the Database project copy).
+/// The ViewModel is duplicated in both the Database project and the MAUI project.
+/// Tests reference the Database project copy because the MAUI project can't run in xUnit
+/// (it pulls in Android targets). Both copies must be kept manually in sync.
+/// </summary>
 public class ItemsListViewModelTests
 {
     private readonly Mock<IApiService> _mockApiService;
@@ -87,6 +93,8 @@ public class ItemsListViewModelTests
     public async Task LoadItemsAsync_ApiThrows_SetsIsLoadingFalse()
     {
         // Arrange
+        // IsLoading must return to false even when an exception is thrown,
+        // otherwise the spinner stays visible and the UI looks broken.
         _mockApiService
             .Setup(a => a.GetItemsAsync())
             .ThrowsAsync(new Exception("Network error"));

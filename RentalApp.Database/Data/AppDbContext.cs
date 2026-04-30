@@ -1,26 +1,43 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RentalApp.Database.Models;
 
 namespace RentalApp.Database.Data;
 
+/// <summary>
+/// EF Core database context for the rental app. Covers Users, Roles, UserRoles, Items,
+/// and Rentals. Reviews aren't tracked here — they live entirely through the API.
+/// </summary>
+/// <remarks>
+/// Connection string resolution works in two ways: first it checks the CONNECTION_STRING
+/// environment variable (used by the migrations runner and CI), and if that's empty it falls
+/// back to the embedded appsettings.json in the assembly. The embedded file approach means
+/// we don't need a separate config file when running the migrations tool locally.
+/// </remarks>
 public class AppDbContext : DbContext
 {
-
+    /// <summary>Parameterless constructor required by EF Core tooling (migrations, scaffolding).</summary>
     public AppDbContext()
     { }
+
+    /// <summary>Constructor used at runtime when DI injects configured options.</summary>
+    /// <param name="options">EF Core options, typically configured in MauiProgram or tests.</param>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        // If DI already configured the context (e.g. tests or MauiProgram), skip this entirely.
         if (optionsBuilder.IsConfigured) return;
 
+        // CI/prod injects the connection string via environment variable.
         var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
         if (string.IsNullOrEmpty(connectionString))
         {
+            // Fall back to the embedded appsettings.json baked into this assembly.
+            // This makes the migrations runner work without any extra config files.
             var a = Assembly.GetExecutingAssembly();
             using var stream = a.GetManifestResourceStream("RentalApp.Database.appsettings.json");
 
@@ -63,7 +80,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(500);
         });
 
-        // Configure UserRole entity
+        // Configure UserRole entity — composite unique index prevents duplicate assignments.
         modelBuilder.Entity<UserRole>(entity =>
         {
             entity.HasIndex(e => new { e.UserId, e.RoleId }).IsUnique();
@@ -77,7 +94,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(ur => ur.RoleId);
         });
 
-        // Configure Item entity
+        // Configure Item entity — precision(10,2) on DailyRate avoids floating-point rounding in Postgres.
         modelBuilder.Entity<Item>(entity =>
         {
             entity.Property(e => e.Title).HasMaxLength(100);
@@ -85,5 +102,4 @@ public class AppDbContext : DbContext
             entity.Property(e => e.DailyRate).HasPrecision(10, 2);
         });
     }
-
 }

@@ -7,6 +7,10 @@ using RentalApp.Views;
 
 namespace RentalApp.ViewModels;
 
+/// <summary>
+/// ViewModel for the Item Detail page. Loads item data, controls which action buttons
+/// are visible (Edit, Request Rental, View Reviews), and submits rental requests.
+/// </summary>
 public partial class ItemDetailViewModel : ObservableObject
 {
     private readonly IApiService _apiService;
@@ -17,12 +21,19 @@ public partial class ItemDetailViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private string errorMessage = string.Empty;
 
+    /// <summary>Default rental start date — tomorrow, so users always start with a valid date.</summary>
     [ObservableProperty]
     private DateTime _startDate = DateTime.Today.AddDays(1);
 
+    /// <summary>Default rental end date — two days from now, giving a one-day rental window.</summary>
     [ObservableProperty]
     private DateTime _endDate = DateTime.Today.AddDays(2);
 
+    /// <summary>
+    /// True if the currently logged-in user owns this item.
+    /// Used to show/hide the Edit button — it was previously showing for all users, which
+    /// was fixed by comparing Item.OwnerId against TokenStore.UserId.
+    /// </summary>
     public bool IsOwner => Item?.OwnerId == _tokenStore.UserId;
 
     public ItemDetailViewModel(
@@ -35,11 +46,16 @@ public partial class ItemDetailViewModel : ObservableObject
         _tokenStore = tokenStore;
     }
 
+    /// <summary>
+    /// Re-evaluates IsOwner when the item loads. Without this, IsOwner would be computed
+    /// before Item is set and always return false.
+    /// </summary>
     partial void OnItemChanged(Item? value)
     {
         OnPropertyChanged(nameof(IsOwner));
     }
 
+    /// <summary>Loads the item from GET /items/{id}. Called from ItemDetailPage when the id query param arrives.</summary>
     [RelayCommand]
     public async Task LoadItemAsync(int id)
     {
@@ -59,12 +75,18 @@ public partial class ItemDetailViewModel : ObservableObject
         }
     }
 
+    /// <summary>Navigates to the Edit Item page with the current item's ID.</summary>
     [RelayCommand]
     private async Task NavigateToEditAsync()
     {
         await Shell.Current.GoToAsync($"EditItemPage?id={Item?.Id}");
     }
 
+    /// <summary>
+    /// Requests a rental via RentalService. Resolves RentalService from the DI container at
+    /// call time because injecting it in the constructor would require every ItemDetailViewModel
+    /// to have a RentalService even when the user is just browsing.
+    /// </summary>
     [RelayCommand]
     private async Task RequestRentalAsync()
     {
@@ -81,6 +103,7 @@ public partial class ItemDetailViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Error", error, "OK");
     }
 
+    /// <summary>Navigates to the Reviews page for this item.</summary>
     [RelayCommand]
     private async Task NavigateToReviewsAsync()
     {

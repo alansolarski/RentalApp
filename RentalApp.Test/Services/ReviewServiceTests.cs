@@ -4,6 +4,12 @@ using RentalApp.Database.Services;
 
 namespace RentalApp.Test.Services;
 
+/// <summary>
+/// Tests for ReviewService. The interesting logic here is the HTTP status code translation
+/// in SubmitReviewAsync — the service catches HttpRequestException and maps 409 Conflict
+/// to a "already reviewed" message and 403 Forbidden to a "borrower only" message.
+/// Those mappings are what these tests verify.
+/// </summary>
 public class ReviewServiceTests
 {
     private readonly Mock<IApiService> _mockApiService;
@@ -40,6 +46,7 @@ public class ReviewServiceTests
     public async Task SubmitReviewAsync_NullComment_CallsApiSuccessfully()
     {
         // Arrange
+        // A null comment is valid — comment is optional in the API.
         _mockApiService
             .Setup(a => a.SubmitReviewAsync(1, 3, null))
             .ReturnsAsync(new Review());
@@ -56,6 +63,7 @@ public class ReviewServiceTests
     public async Task SubmitReviewAsync_ConflictException_ReturnsFalseWithAlreadyReviewedError()
     {
         // Arrange
+        // 409 Conflict = the API already has a review from this user for this rental.
         _mockApiService
             .Setup(a => a.SubmitReviewAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string?>()))
             .ThrowsAsync(new HttpRequestException("Conflict", null, System.Net.HttpStatusCode.Conflict));
@@ -72,6 +80,7 @@ public class ReviewServiceTests
     public async Task SubmitReviewAsync_ForbiddenException_ReturnsFalseWithForbiddenError()
     {
         // Arrange
+        // 403 Forbidden = the caller isn't the borrower for this rental.
         _mockApiService
             .Setup(a => a.SubmitReviewAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string?>()))
             .ThrowsAsync(new HttpRequestException("Forbidden", null, System.Net.HttpStatusCode.Forbidden));
@@ -88,6 +97,7 @@ public class ReviewServiceTests
     public async Task SubmitReviewAsync_UnexpectedException_ReturnsFalseWithExceptionMessage()
     {
         // Arrange
+        // Anything that isn't a known HTTP status code falls through to the raw message.
         _mockApiService
             .Setup(a => a.SubmitReviewAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string?>()))
             .ThrowsAsync(new Exception("Network timeout"));

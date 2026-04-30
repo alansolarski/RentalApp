@@ -7,6 +7,17 @@ using RentalApp.Services;
 
 namespace RentalApp.ViewModels;
 
+/// <summary>
+/// ViewModel for the Items List page. Loads all available items and provides navigation
+/// commands to other sections of the app.
+/// </summary>
+/// <remarks>
+/// This is one of two copies of this ViewModel. The other lives at
+/// RentalApp.Database/ViewModels/ItemsListViewModel.cs and is the one referenced by
+/// ItemsListViewModelTests. Both copies must be kept in sync manually. The split exists
+/// because the test project can't reference the MAUI project without pulling in Android targets.
+/// See the Database copy's class summary for the full explanation.
+/// </remarks>
 public partial class ItemsListViewModel : ObservableObject
 {
     private readonly IApiService _apiService;
@@ -27,6 +38,10 @@ public partial class ItemsListViewModel : ObservableObject
         _navigationService = navigationService;
     }
 
+    /// <summary>
+    /// Fetches all items from GET /items and replaces the current collection.
+    /// Called from ItemsListPage.OnAppearing so the list refreshes on every visit.
+    /// </summary>
     [RelayCommand]
     public async Task LoadItemsAsync()
     {
@@ -47,30 +62,36 @@ public partial class ItemsListViewModel : ObservableObject
         }
     }
 
+    /// <summary>Navigates to the Create Item page.</summary>
     [RelayCommand]
     public async Task NavigateToCreateAsync()
     {
         await _navigationService.NavigateToAsync("CreateItemPage");
     }
 
+    /// <summary>Navigates to the detail page for the tapped item.</summary>
+    /// <param name="id">The item's ID, passed from the CollectionView SelectionChanged binding.</param>
     [RelayCommand]
     public async Task NavigateToDetailAsync(int id)
     {
         await _navigationService.NavigateToAsync($"ItemDetailPage?id={id}");
     }
 
+    /// <summary>Navigates to the Nearby Items location search page.</summary>
     [RelayCommand]
     private async Task NavigateToNearbyAsync()
     {
         await _navigationService.NavigateToAsync("NearbyItemsPage");
     }
 
+    /// <summary>Navigates to the Rentals management page.</summary>
     [RelayCommand]
     private async Task NavigateToRentalsAsync()
     {
         await _navigationService.NavigateToAsync("RentalsPage");
     }
 
+    /// <summary>Navigates to the user's Profile page.</summary>
     [RelayCommand]
     private async Task NavigateToProfileAsync()
     {

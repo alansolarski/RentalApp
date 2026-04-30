@@ -1,8 +1,3 @@
-/// @file AppShellViewModel.cs
-/// @brief Application shell view model for managing navigation and authentication state
-/// @author RentalApp Development Team
-/// @date 2025
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RentalApp.Database.Services;
@@ -12,66 +7,45 @@ using System.Diagnostics;
 
 namespace RentalApp.ViewModels
 {
-    /// @brief View model for the application shell that manages navigation and authentication
-    /// @details Handles menu items, navigation commands, and authentication state changes
-    /// @extends BaseViewModel
+    /// <summary>
+    /// ViewModel for the Shell navigation menu. Manages logout, profile/settings navigation,
+    /// and updates command states when the user logs in or out.
+    /// </summary>
     public partial class AppShellViewModel : BaseViewModel
     {
-        /// @brief Authentication service for managing user authentication
         private readonly IAuthenticationService _authService;
-
-        /// @brief Navigation service for managing page navigation
         private readonly INavigationService _navigationService;
 
-        /// @brief Collection of dynamic menu bar items
-        /// @details Observable collection that can be modified at runtime based on user permissions
+        /// <summary>Menu bar items that can be added or removed at runtime. Not currently populated.</summary>
         public ObservableCollection<MenuBarItem> DynamicMenuBarItems { get; } = new();
 
-        /// @brief Default constructor for design-time support
-        /// @details Sets the title to "RentalApp"
+        /// <summary>Parameterless constructor needed for XAML design-time support.</summary>
         public AppShellViewModel()
         {
             Title = "RentalApp";
         }
 
-        /// @brief Initializes a new instance of the AppShellViewModel class
-        /// @param authService The authentication service instance
-        /// @param navigationService The navigation service instance
-        /// @details Sets up authentication state change event handler and initializes the title
+        /// <summary>Creates the ViewModel with auth and navigation services.</summary>
         public AppShellViewModel(IAuthenticationService authService, INavigationService navigationService)
         {
             _authService = authService;
             _navigationService = navigationService;
+            // Listen for login/logout so we can refresh command can-execute states.
             _authService.AuthenticationStateChanged += OnAuthenticationStateChanged;
             Title = "RentalApp";
         }
 
-        /// @brief Determines if guest actions can be executed
-        /// @return True if the current user has the "Guest" role
+        // These CanExecute methods are wired to specific role checks.
+        // They're not fully used yet — most navigation is unconditional at the moment.
         private bool CanExecuteGuestAction() => _authService.HasRole("Guest");
-
-        /// @brief Determines if user actions can be executed
-        /// @return True if the current user has the "OrdinaryUser" role
         private bool CanExecuteUserAction() => _authService.HasRole("OrdinaryUser");
+        private bool CanExecuteAdminAction() => _authService.HasRole("Admin");
+        private bool CanExecuteAuthenticatedAction() => _authService.IsAuthenticated;
 
-        /// @brief Determines if admin actions can be executed
-        /// @return True if the current user has the "Admin" role
-        private bool CanExecuteAdminAction()
-        {
-            return _authService.HasRole("Admin");
-        }
-
-        /// @brief Determines if authenticated actions can be executed
-        /// @return True if the user is authenticated
-        private bool CanExecuteAuthenticatedAction()
-        {
-            return _authService.IsAuthenticated;
-        }
-
-        /// @brief Handles authentication state changes
-        /// @param sender The event sender
-        /// @param isAuthenticated Whether the user is authenticated
-        /// @details Updates command can-execute states and logs authentication information
+        /// <summary>
+        /// Fires when the user logs in or out. Refreshes all command states so the
+        /// logout button and nav items enable/disable correctly.
+        /// </summary>
         private void OnAuthenticationStateChanged(object? sender, bool isAuthenticated)
         {
             LogoutCommand.NotifyCanExecuteChanged();
@@ -81,31 +55,30 @@ namespace RentalApp.ViewModels
             Debug.WriteLine($"Current user is admin: {_authService.HasRole("Admin")}");
         }
 
-        /// @brief Navigates to the current user's profile page
-        /// @return A task representing the asynchronous navigation operation
+        // Profile and Settings navigation goes to TempPage for now — not yet implemented as real pages.
         [RelayCommand]
         private async Task NavigateToProfileAsync()
         {
             await _navigationService.NavigateToAsync("TempPage");
         }
 
-        /// @brief Navigates to the current user's settings page
-        /// @return A task representing the asynchronous navigation operation
         [RelayCommand]
         private async Task NavigateToSettingsAsync()
         {
             await _navigationService.NavigateToAsync("TempPage");
         }
 
-        /// @brief Logs out the current user and navigates to login page
-        /// @details Relay command that can only be executed by authenticated users
-        /// @return A task representing the asynchronous logout operation
+        /// <summary>
+        /// Logs the user out and navigates to the login page.
+        /// The CanExecute guard prevents this running before login.
+        /// </summary>
         [RelayCommand(CanExecute = nameof(CanExecuteAuthenticatedAction))]
         private async Task LogoutAsync()
         {
             await _authService.LogoutAsync();
             await _navigationService.NavigateToAsync("LoginPage");
 
+            // Notify all nav commands to re-evaluate their can-execute state.
             LogoutCommand.NotifyCanExecuteChanged();
             NavigateToProfileCommand.NotifyCanExecuteChanged();
             NavigateToSettingsCommand.NotifyCanExecuteChanged();

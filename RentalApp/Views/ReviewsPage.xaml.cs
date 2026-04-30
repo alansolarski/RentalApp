@@ -2,6 +2,17 @@ using RentalApp.ViewModels;
 
 namespace RentalApp.Views;
 
+/// <summary>Code-behind for the Reviews page. Handles the three query parameters and the star rating picker.</summary>
+/// <remarks>
+/// This page is navigated to from two places with different parameter sets:
+///   - ItemDetailPage: sends only "itemId" (view mode — user just browses reviews)
+///   - RentalsPage LeaveReview: sends "itemId", "rentalId", and "canReview=true" (review form shown)
+///
+/// The three QueryProperty attributes map each Shell query parameter to a setter here,
+/// which then push the value straight into ReviewsViewModel. The page class is the
+/// recipient because Shell's [QueryProperty] requires the attribute to be on a ContentPage.
+/// ReviewsViewModel is a singleton so state doesn't get lost on second navigation.
+/// </remarks>
 [QueryProperty(nameof(ItemId), "itemId")]
 [QueryProperty(nameof(RentalId), "rentalId")]
 [QueryProperty(nameof(CanReview), "canReview")]
@@ -9,6 +20,7 @@ public partial class ReviewsPage : ContentPage
 {
     private readonly ReviewsViewModel _viewModel;
 
+    /// <summary>Triggers a review load immediately when the ID arrives from the query string.</summary>
     public int ItemId
     {
         set
@@ -18,11 +30,13 @@ public partial class ReviewsPage : ContentPage
         }
     }
 
+    /// <summary>Passed through from RentalsPage so the ViewModel knows which rental to submit against.</summary>
     public int RentalId
     {
         set => _viewModel.RentalId = value;
     }
 
+    /// <summary>Set to true when navigating from RentalsPage to show the review form.</summary>
     public bool CanReview
     {
         set => _viewModel.CanReview = value;
@@ -40,6 +54,12 @@ public partial class ReviewsPage : ContentPage
         base.OnAppearing();
     }
 
+    /// <summary>Handles the star button clicks and updates the selected rating on the ViewModel.</summary>
+    /// <remarks>
+    /// MAUI doesn't have a built-in star rating control, so I used a row of Buttons labelled
+    /// "★1", "★2", ... "★5". This handler strips the star character, parses the number,
+    /// and sets SelectedRating on the ViewModel. It's a workaround but it works reliably.
+    /// </remarks>
     private void OnStarClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && BindingContext is ReviewsViewModel vm)

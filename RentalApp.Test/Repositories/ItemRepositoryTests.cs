@@ -4,6 +4,12 @@ using RentalApp.Test.Fixtures;
 
 namespace RentalApp.Test.Repositories;
 
+/// <summary>
+/// Integration tests for ItemRepository against an in-memory EF Core database.
+/// Using a real (in-memory) DB rather than mocking the context because mocking
+/// DbSet is painful and tests against the real EF query pipeline catch more issues.
+/// Each test class gets its own isolated DB via DatabaseFixture.
+/// </summary>
 public class ItemRepositoryTests : IDisposable
 {
     private readonly DatabaseFixture _fixture;
@@ -24,6 +30,7 @@ public class ItemRepositoryTests : IDisposable
     // Helpers
     // -------------------------------------------------------------------------
 
+    /// <summary>Inserts a minimal valid User into the in-memory DB and returns it with its generated ID.</summary>
     private User CreateTestUser(string email = "owner@test.com")
     {
         var user = new User
@@ -39,6 +46,10 @@ public class ItemRepositoryTests : IDisposable
         return user;
     }
 
+    /// <summary>
+    /// Builds a valid Item object without saving it. Call CreateAsync on the SUT to persist.
+    /// Coordinates are set to Edinburgh city centre so distance calculations don't fail.
+    /// </summary>
     private Item CreateTestItem(int ownerId, string title = "Test Drill")
     {
         return new Item

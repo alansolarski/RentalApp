@@ -2,8 +2,14 @@ using RentalApp.Database.Models;
 
 namespace RentalApp.Test.Models;
 
+/// <summary>
+/// Tests for the computed display properties on RentalDisplayItem.
+/// RentalDisplayItem lives in the Database project specifically so these tests can reach it
+/// without taking a dependency on the MAUI project (which can't run in xUnit).
+/// </summary>
 public class RentalDisplayItemTests
 {
+    /// <summary>Helper to build a RentalDisplayItem from a status string and end date.</summary>
     private RentalDisplayItem CreateItem(string status, DateTime endDate, bool isIncoming = false)
     {
         var rental = new Rental { Status = status, EndDate = endDate };
@@ -28,6 +34,7 @@ public class RentalDisplayItemTests
     public void IsOverdue_WhenOutForRentAndEndDateToday_ReturnsFalse()
     {
         // Arrange
+        // EndDate == Today means the return is due today — not yet overdue.
         var item = CreateItem("Out for Rent", DateTime.Today);
 
         // Assert
@@ -52,6 +59,7 @@ public class RentalDisplayItemTests
     public void IsOverdue_WhenNotOutForRent_ReturnsFalse(string status)
     {
         // Arrange
+        // Past end date but status isn't "Out for Rent" — can't be overdue.
         var item = CreateItem(status, DateTime.Today.AddDays(-1));
 
         // Assert
@@ -72,6 +80,7 @@ public class RentalDisplayItemTests
     [Fact]
     public void ShowApproveReject_WhenRequestedAndOutgoing_ReturnsFalse()
     {
+        // Only the owner (incoming side) can approve or reject — borrowers can't.
         var item = CreateItem("Requested", DateTime.Today, isIncoming: false);
         Assert.False(item.ShowApproveReject);
     }
@@ -90,6 +99,7 @@ public class RentalDisplayItemTests
     [Fact]
     public void ShowMarkReturned_WhenOutForRentAndIncoming_ReturnsFalse()
     {
+        // The owner doesn't mark the item returned — that's the borrower's action.
         var item = CreateItem("Out for Rent", DateTime.Today, isIncoming: true);
         Assert.False(item.ShowMarkReturned);
     }
@@ -108,6 +118,7 @@ public class RentalDisplayItemTests
     [Fact]
     public void ShowLeaveReview_WhenCompletedAndIncoming_ReturnsFalse()
     {
+        // Only the borrower (outgoing side) can leave a review — owners don't.
         var item = CreateItem("Completed", DateTime.Today, isIncoming: true);
         Assert.False(item.ShowLeaveReview);
     }

@@ -8,10 +8,16 @@ using System.Collections.ObjectModel;
 
 namespace RentalApp.ViewModels;
 
+/// <summary>
+/// ViewModel for the Rentals page. Manages incoming (owner-side) and outgoing (borrower-side)
+/// rental lists, the tab toggle between them, and action commands (approve, reject, return, review).
+/// </summary>
 public partial class RentalsViewModel : ObservableObject
 {
     private readonly IRentalService _rentalService;
     private readonly TokenStore _tokenStore;
+
+    // Both lists are fetched in a single LoadRentals call and cached here.
     private List<Rental> _incomingRentals = new();
     private List<Rental> _outgoingRentals = new();
     private bool _showingIncoming = true;
@@ -25,6 +31,7 @@ public partial class RentalsViewModel : ObservableObject
     [ObservableProperty]
     private string _errorMessage = string.Empty;
 
+    // Button colours toggle to give a visual tab-indicator effect.
     [ObservableProperty]
     private Color _incomingButtonColor = Colors.Purple;
 
@@ -33,6 +40,8 @@ public partial class RentalsViewModel : ObservableObject
 
     public bool ShowingIncoming => _showingIncoming;
     public bool ShowingOutgoing => !_showingIncoming;
+
+    /// <summary>The logged-in user's numeric ID — used in the XAML to colour-code rental rows.</summary>
     public int CurrentUserId => _tokenStore.UserId;
 
     public RentalsViewModel(IRentalService rentalService, TokenStore tokenStore)
@@ -41,6 +50,10 @@ public partial class RentalsViewModel : ObservableObject
         _tokenStore = tokenStore;
     }
 
+    /// <summary>
+    /// Fetches both incoming and outgoing rentals in parallel and refreshes the displayed list.
+    /// Called from RentalsPage.OnAppearing so the list is always fresh.
+    /// </summary>
     [RelayCommand]
     private async Task LoadRentalsAsync()
     {
@@ -62,6 +75,7 @@ public partial class RentalsViewModel : ObservableObject
         }
     }
 
+    /// <summary>Switches the view to the incoming (owner) tab.</summary>
     [RelayCommand]
     private void ShowIncoming()
     {
@@ -73,6 +87,7 @@ public partial class RentalsViewModel : ObservableObject
         RefreshActiveList();
     }
 
+    /// <summary>Switches the view to the outgoing (borrower) tab.</summary>
     [RelayCommand]
     private void ShowOutgoing()
     {
@@ -84,6 +99,11 @@ public partial class RentalsViewModel : ObservableObject
         RefreshActiveList();
     }
 
+    /// <summary>
+    /// Rebuilds ActiveRentals from whichever list is currently shown.
+    /// Wraps each Rental in a RentalDisplayItem so the XAML can bind to
+    /// computed properties like ShowApproveReject and IsOverdue.
+    /// </summary>
     private void RefreshActiveList()
     {
         ActiveRentals.Clear();
@@ -92,6 +112,7 @@ public partial class RentalsViewModel : ObservableObject
             ActiveRentals.Add(new RentalDisplayItem(r, _showingIncoming));
     }
 
+    /// <summary>Approves a rental request and reloads the list.</summary>
     [RelayCommand]
     private async Task ApproveRentalAsync(RentalDisplayItem item)
     {
@@ -102,6 +123,7 @@ public partial class RentalsViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Error", error, "OK");
     }
 
+    /// <summary>Rejects a rental request and reloads the list.</summary>
     [RelayCommand]
     private async Task RejectRentalAsync(RentalDisplayItem item)
     {
@@ -112,6 +134,7 @@ public partial class RentalsViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Error", error, "OK");
     }
 
+    /// <summary>Marks a rental as returned (borrower action) and reloads the list.</summary>
     [RelayCommand]
     private async Task MarkReturnedAsync(RentalDisplayItem item)
     {
@@ -122,6 +145,7 @@ public partial class RentalsViewModel : ObservableObject
             await Shell.Current.DisplayAlert("Error", error, "OK");
     }
 
+    /// <summary>Navigates to the Reviews page with canReview=true so the review form is shown.</summary>
     [RelayCommand]
     private async Task LeaveReviewAsync(RentalDisplayItem item)
     {
