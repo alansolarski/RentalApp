@@ -12,10 +12,9 @@
 
     <ScrollView>
         <Grid Padding="30"
-                RowSpacing="20"
-                VerticalOptions="Center">
+              RowSpacing="20"
+              VerticalOptions="Center">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -81,17 +80,8 @@
                        Margin="15,10"/>
             </Border>
 
-            <!-- Remember Me -->
-            <StackLayout Grid.Row="4"
-                    Orientation="Horizontal"
-                    HorizontalOptions="Start">
-                <CheckBox IsChecked="{Binding RememberMe}"/>
-                <Label Text="Remember me"
-                        VerticalOptions="Center"/>
-            </StackLayout>
-
             <!-- Login Button -->
-            <Button Grid.Row="5"
+            <Button Grid.Row="4"
                     Text="Login"
                     Command="{Binding LoginCommand}"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
@@ -102,15 +92,15 @@
                     FontAttributes="Bold"/>
 
             <!-- Loading Indicator -->
-            <ActivityIndicator Grid.Row="6"
+            <ActivityIndicator Grid.Row="5"
                                IsVisible="{Binding IsBusy}"
                                IsRunning="{Binding IsBusy}"
                                Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
 
             <!-- Footer Links -->
-            <StackLayout Grid.Row="7"
-                    Spacing="10"
-                    Margin="0,20,0,0">
+            <StackLayout Grid.Row="6"
+                         Spacing="10"
+                         Margin="0,20,0,0">
                 <Button Text="Create Account"
                         Command="{Binding NavigateToRegisterCommand}"
                         BackgroundColor="Transparent"

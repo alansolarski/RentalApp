@@ -7,7 +7,7 @@
              x:DataType="vm:ReviewsViewModel"
              Title="Reviews">
 
-    <Grid RowDefinitions="Auto,*"
+    <Grid RowDefinitions="Auto,Auto,*"
             Padding="16">
 
         <VerticalStackLayout Grid.Row="0"
@@ -48,14 +48,14 @@
                     TextColor="White"/>
         </VerticalStackLayout>
 
-        <Label Grid.Row="0"
+        <Label Grid.Row="1"
                Text="{Binding StatusMessage}"
                IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}"
                TextColor="Gray"
                HorizontalOptions="Center"
                Margin="0,8,0,0"/>
 
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="2"
                 ItemsSource="{Binding Reviews}">
             <CollectionView.EmptyView>
                 <Label Text="No reviews yet."

@@ -15,4 +15,5 @@ public class Item
 
     // Navigation properties
     public User? Owner { get; set; }
+    public string? OwnerName { get; set; }
 }

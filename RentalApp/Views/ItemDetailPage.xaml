@@ -42,7 +42,7 @@
                                           <VerticalStackLayout Grid.Column="1">
                                                  <Label Text="Owner"
                                                         FontAttributes="Bold"/>
-                                                 <Label Text="{Binding Item.Owner.FirstName}"/>
+                                                 <Label Text="{Binding Item.OwnerName}"/>
                                           </VerticalStackLayout>
                                    </Grid>
 
@@ -72,7 +72,8 @@
                      </VerticalStackLayout>
 
                      <Button Text="Edit Item"
-                             Command="{Binding NavigateToEditCommand}"/>
+                             Command="{Binding NavigateToEditCommand}"
+                             IsVisible="{Binding IsOwner}"/>
 
                      <Button Text="View Reviews"
                              Command="{Binding NavigateToReviewsCommand}"
