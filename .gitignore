@@ -1,3 +1,5 @@
+scripts/
+
 # Environment files
 .env
 .env.local
