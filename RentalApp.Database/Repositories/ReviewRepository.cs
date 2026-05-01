@@ -1,7 +1,7 @@
 using RentalApp.Database.Data;
 using RentalApp.Database.Models;
 
-namespace RentalApp.Database.Repositories;
+namespace RentalApp.Database.Data.Repositories;
 
 /// <summary>
 /// Stub implementation of <see cref="IReviewRepository"/>.

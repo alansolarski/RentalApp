@@ -11,7 +11,8 @@ namespace RentalApp.Views;
 /// The three QueryProperty attributes map each Shell query parameter to a setter here,
 /// which then push the value straight into ReviewsViewModel. The page class is the
 /// recipient because Shell's [QueryProperty] requires the attribute to be on a ContentPage.
-/// ReviewsViewModel is a singleton so state doesn't get lost on second navigation.
+/// ReviewsViewModel is transient — a fresh instance is created on each navigation, and these
+/// setters re-populate it immediately, so no state is lost.
 /// </remarks>
 [QueryProperty(nameof(ItemId), "itemId")]
 [QueryProperty(nameof(RentalId), "rentalId")]

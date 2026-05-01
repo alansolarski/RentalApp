@@ -1,4 +1,5 @@
 using Moq;
+using RentalApp.Database.Data.Repositories;
 using RentalApp.Database.Models;
 using RentalApp.Database.Services;
 using RentalApp.Database.ViewModels;
@@ -13,15 +14,15 @@ namespace RentalApp.Test.ViewModels;
 /// </summary>
 public class ItemsListViewModelTests
 {
-    private readonly Mock<IApiService> _mockApiService;
+    private readonly Mock<IItemRepository> _mockItemRepository;
     private readonly Mock<INavigationService> _mockNavigationService;
     private readonly ItemsListViewModel _sut;
 
     public ItemsListViewModelTests()
     {
-        _mockApiService = new Mock<IApiService>();
+        _mockItemRepository = new Mock<IItemRepository>();
         _mockNavigationService = new Mock<INavigationService>();
-        _sut = new ItemsListViewModel(_mockApiService.Object, _mockNavigationService.Object);
+        _sut = new ItemsListViewModel(_mockItemRepository.Object, _mockNavigationService.Object);
     }
 
     // -------------------------------------------------------------------------
@@ -37,7 +38,7 @@ public class ItemsListViewModelTests
             new Item { Id = 1, Title = "Drill" },
             new Item { Id = 2, Title = "Tent" }
         };
-        _mockApiService.Setup(a => a.GetItemsAsync()).ReturnsAsync(items);
+        _mockItemRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(items);
 
         // Act
         await _sut.LoadItemsAsync();
@@ -52,7 +53,7 @@ public class ItemsListViewModelTests
     public async Task LoadItemsAsync_Success_ClearsErrorMessage()
     {
         // Arrange
-        _mockApiService.Setup(a => a.GetItemsAsync()).ReturnsAsync(new List<Item>());
+        _mockItemRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Item>());
 
         // Act
         await _sut.LoadItemsAsync();
@@ -65,7 +66,7 @@ public class ItemsListViewModelTests
     public async Task LoadItemsAsync_Success_SetsIsLoadingFalseWhenDone()
     {
         // Arrange
-        _mockApiService.Setup(a => a.GetItemsAsync()).ReturnsAsync(new List<Item>());
+        _mockItemRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Item>());
 
         // Act
         await _sut.LoadItemsAsync();
@@ -75,11 +76,11 @@ public class ItemsListViewModelTests
     }
 
     [Fact]
-    public async Task LoadItemsAsync_ApiThrows_SetsErrorMessage()
+    public async Task LoadItemsAsync_RepositoryThrows_SetsErrorMessage()
     {
         // Arrange
-        _mockApiService
-            .Setup(a => a.GetItemsAsync())
+        _mockItemRepository
+            .Setup(r => r.GetAllAsync())
             .ThrowsAsync(new Exception("Network error"));
 
         // Act
@@ -90,13 +91,13 @@ public class ItemsListViewModelTests
     }
 
     [Fact]
-    public async Task LoadItemsAsync_ApiThrows_SetsIsLoadingFalse()
+    public async Task LoadItemsAsync_RepositoryThrows_SetsIsLoadingFalse()
     {
         // Arrange
         // IsLoading must return to false even when an exception is thrown,
         // otherwise the spinner stays visible and the UI looks broken.
-        _mockApiService
-            .Setup(a => a.GetItemsAsync())
+        _mockItemRepository
+            .Setup(r => r.GetAllAsync())
             .ThrowsAsync(new Exception("Network error"));
 
         // Act
@@ -110,7 +111,7 @@ public class ItemsListViewModelTests
     public async Task LoadItemsAsync_EmptyList_ItemsCollectionIsEmpty()
     {
         // Arrange
-        _mockApiService.Setup(a => a.GetItemsAsync()).ReturnsAsync(new List<Item>());
+        _mockItemRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Item>());
 
         // Act
         await _sut.LoadItemsAsync();

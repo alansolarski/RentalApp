@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RentalApp.Database.Data.Repositories;
 using RentalApp.Database.Models;
 using RentalApp.Database.Services;
 
@@ -22,7 +23,7 @@ namespace RentalApp.Database.ViewModels;
 /// </remarks>
 public partial class ItemsListViewModel : ObservableObject
 {
-    private readonly IApiService _apiService;
+    private readonly IItemRepository _itemRepository;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -35,16 +36,16 @@ public partial class ItemsListViewModel : ObservableObject
     private string _errorMessage = string.Empty;
 
     /// <summary>Creates the ViewModel with its required dependencies.</summary>
-    /// <param name="apiService">Used to fetch items from the API.</param>
+    /// <param name="itemRepository">Used to fetch items — abstracts the API behind a repository.</param>
     /// <param name="navigationService">Used for page navigation commands.</param>
-    public ItemsListViewModel(IApiService apiService, INavigationService navigationService)
+    public ItemsListViewModel(IItemRepository itemRepository, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _itemRepository = itemRepository;
         _navigationService = navigationService;
     }
 
     /// <summary>
-    /// Loads all items from the API and populates the Items collection.
+    /// Loads all items via the repository and populates the Items collection.
     /// Sets ErrorMessage if the call fails, clears it on success.
     /// IsLoading is guaranteed to be reset in the finally block.
     /// </summary>
@@ -55,7 +56,7 @@ public partial class ItemsListViewModel : ObservableObject
         ErrorMessage = string.Empty;
         try
         {
-            var items = await _apiService.GetItemsAsync();
+            var items = await _itemRepository.GetAllAsync();
             Items = new ObservableCollection<Item>(items);
         }
         catch (Exception ex)

@@ -11,9 +11,10 @@ namespace RentalApp.ViewModels;
 /// showing the "leave a review" form for a specific rental.
 /// </summary>
 /// <remarks>
-/// Registered as a singleton in MauiProgram because ReviewsPage can be reached from two places:
-/// ItemDetailPage (just viewing reviews) and RentalsPage (leaving a review after a completed rental).
-/// The singleton means query parameters from the second navigation path don't get lost.
+/// Registered as transient — a fresh instance is created on each navigation to ReviewsPage.
+/// QueryProperty attributes live on the page (not the ViewModel), so the page's setters push
+/// itemId/rentalId/canReview into the ViewModel on every navigation regardless. Transient avoids
+/// the stale-state bug where a previous item's reviews bleed through before the new load completes.
 /// </remarks>
 public partial class ReviewsViewModel : ObservableObject
 {

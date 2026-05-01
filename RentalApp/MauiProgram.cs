@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using RentalApp.ViewModels;
 using RentalApp.Database.Data;
+using RentalApp.Database.Data.Repositories;
 using RentalApp.Views;
 using System.Diagnostics;
 using RentalApp.Database.Services;
@@ -60,6 +61,7 @@ public static class MauiProgram
         // on every request (socket exhaustion risk with transient HttpClients).
         builder.Services.AddSingleton<IApiService, ApiService>();
 
+        builder.Services.AddTransient<IItemRepository, ApiItemRepository>();
         builder.Services.AddTransient<ItemsListViewModel>();
         builder.Services.AddTransient<ItemsListPage>();
         builder.Services.AddTransient<CreateItemViewModel>();
@@ -90,7 +92,7 @@ public static class MauiProgram
         // ReviewsViewModel is a singleton because it can be navigated to from both
         // ItemDetailPage (viewing reviews) and RentalsPage (leaving a review), and we
         // don't want to lose the loaded reviews when navigating back.
-        builder.Services.AddSingleton<ReviewsViewModel>();
+        builder.Services.AddTransient<ReviewsViewModel>();
         builder.Services.AddTransient<ReviewsPage>();
 
         builder.Services.AddTransient<ProfileViewModel>();

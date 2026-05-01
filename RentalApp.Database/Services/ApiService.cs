@@ -52,7 +52,7 @@ public class ApiService : IApiService
     public async Task<IEnumerable<Item>> GetItemsAsync()
     {
         AttachToken();
-        var response = await _httpClient.GetFromJsonAsync<ItemsResponse>("items");
+        var response = await _httpClient.GetFromJsonAsync<ItemsResponse>("items?pageSize=100");
         return response?.Items ?? [];
     }
 

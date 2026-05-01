@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using RentalApp.Database.Data.Repositories;
 using RentalApp.Database.Models;
 using RentalApp.Database.Services;
 using RentalApp.Services;
@@ -20,7 +21,7 @@ namespace RentalApp.ViewModels;
 /// </remarks>
 public partial class ItemsListViewModel : ObservableObject
 {
-    private readonly IApiService _apiService;
+    private readonly IItemRepository _itemRepository;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -32,14 +33,14 @@ public partial class ItemsListViewModel : ObservableObject
     [ObservableProperty]
     private string _errorMessage = string.Empty;
 
-    public ItemsListViewModel(IApiService apiService, INavigationService navigationService)
+    public ItemsListViewModel(IItemRepository itemRepository, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _itemRepository = itemRepository;
         _navigationService = navigationService;
     }
 
     /// <summary>
-    /// Fetches all items from GET /items and replaces the current collection.
+    /// Fetches all items via the repository and replaces the current collection.
     /// Called from ItemsListPage.OnAppearing so the list refreshes on every visit.
     /// </summary>
     [RelayCommand]
@@ -49,7 +50,7 @@ public partial class ItemsListViewModel : ObservableObject
         ErrorMessage = string.Empty;
         try
         {
-            var items = await _apiService.GetItemsAsync();
+            var items = await _itemRepository.GetAllAsync();
             Items = new ObservableCollection<Item>(items);
         }
         catch (Exception ex)

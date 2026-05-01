@@ -1,4 +1,4 @@
-namespace RentalApp.Database.Repositories;
+namespace RentalApp.Database.Data.Repositories;
 
 /// <summary>
 /// Marker interface for the review repository. Currently empty because all review
