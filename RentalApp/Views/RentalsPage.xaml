@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:RentalApp.ViewModels"
+             xmlns:database="clr-namespace:RentalApp.Database.Models;assembly=RentalApp.Database"
              x:Class="RentalApp.Views.RentalsPage"
              x:DataType="vm:RentalsViewModel"
              Title="Rentals">
@@ -28,7 +29,7 @@
                 <CollectionView Grid.Row="2"
                                 ItemsSource="{Binding ActiveRentals}">
                         <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="vm:RentalDisplayItem">
+                                <DataTemplate x:DataType="database:RentalDisplayItem">
                                         <Frame Margin="12,6"
                                                Padding="14">
                                                 <VerticalStackLayout Spacing="6">
