@@ -138,6 +138,11 @@ public class ApiService : IApiService
         if (response.IsSuccessStatusCode)
             return (true, string.Empty);
 
+        var errorBody = await response.Content.ReadAsStringAsync();
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest &&
+            errorBody.Contains("own item", StringComparison.OrdinalIgnoreCase))
+            return (false, "You can't request a rental for your own item.");
+
         return (false, $"Failed to create rental: {response.StatusCode}");
     }
 

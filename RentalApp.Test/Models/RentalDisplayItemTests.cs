@@ -122,4 +122,5 @@ public class RentalDisplayItemTests
         var item = CreateItem("Completed", DateTime.Today, isIncoming: true);
         Assert.False(item.ShowLeaveReview);
     }
+
 }
