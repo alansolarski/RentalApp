@@ -9,6 +9,7 @@ public partial class LoginPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+        HideSoftInputOnTapped = true;
     }
 
     protected override void OnAppearing()
