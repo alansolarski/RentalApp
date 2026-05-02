@@ -10,6 +10,9 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +25,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Install SonarCloud scanner
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Create CI appsettings.json
@@ -36,7 +39,7 @@ jobs:
           EOF2
 
       - name: Begin SonarCloud analysis
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: |
           dotnet-sonarscanner begin \
             /k:"alansolarski_RentalApp" \
@@ -61,5 +64,5 @@ jobs:
         run: dotnet test RentalApp.Test/RentalApp.Test.csproj --no-build -c Debug --verbosity normal --collect:"XPlat Code Coverage" --settings RentalApp.Test/coverlet.runsettings -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: End SonarCloud analysis
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
