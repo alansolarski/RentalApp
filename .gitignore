@@ -1,4 +1,6 @@
 scripts/
+**/coveragereport/
+**/TestResults/
 
 # Environment files
 .env
