@@ -82,12 +82,10 @@ public partial class ItemDetailViewModel : ObservableObject
         await Shell.Current.GoToAsync($"EditItemPage?id={Item?.Id}");
     }
 
-    /// <summary>
-    /// Requests a rental via RentalService. Resolves RentalService from the DI container at
-    /// call time because injecting it in the constructor would require every ItemDetailViewModel
-    /// to have a RentalService even when the user is just browsing.
-    /// </summary>
-    [RelayCommand]
+    // Service Locator here, not constructor injection. Hit a circular DI issue while wiring
+    // this up and grabbed RentalService out of the container at call time as a quick fix.
+    // Means this can't be swapped in a test, which is why there's no test class for
+    // ItemDetailViewModel. Every other ViewModel uses constructor injection.    [RelayCommand]
     private async Task RequestRentalAsync()
     {
         var rentalService = IPlatformApplication.Current?.Services

@@ -41,6 +41,10 @@ public class ApiAuthenticationService : IAuthenticationService
     public List<string> CurrentUserRoles => [];
 
     /// <summary>Creates the service with a shared TokenStore singleton.</summary>
+    // Note: this builds its own HttpClient instead of sharing the one in ApiService.
+    // ApiService is a singleton specifically so HttpClient isn't recreated everywhere,
+    // and this class bypasses that. Only fires on login/register/logout so the leak is
+    // small, but the proper fix is one HttpClient registered in DI and injected into both.
     public ApiAuthenticationService(TokenStore tokenStore)
     {
         _tokenStore = tokenStore;

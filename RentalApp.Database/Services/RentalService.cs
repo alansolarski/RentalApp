@@ -56,6 +56,9 @@ public class RentalService : IRentalService
     public async Task<(bool Success, string Error)> UpdateRentalStatusAsync(
         int rentalId, string newStatus)
     {
+        // Status values are plain strings here, in RentalDisplayItem, and on the API.
+        // Should've been a central enum or constants class. A typo or drift between
+        // files wouldn't be caught at compile time.
         var validStatuses = new[] { "Approved", "Rejected", "Returned", "Completed" };
         if (!validStatuses.Contains(newStatus))
             return (false, "Invalid status.");
